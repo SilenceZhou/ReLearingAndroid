@@ -30,6 +30,7 @@ public class DisplayMessageActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
+        /// 接收参数
         String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
         TextView textView = findViewById(R.id.textView);

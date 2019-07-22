@@ -1,10 +1,14 @@
 package com.silencezhou.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -13,13 +17,17 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.Dictionary;
+
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
+
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -47,7 +55,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private TextView textView;
     private int mLocalVersionCode;
-    private String tag = "SplashActivity.tag";
+    private String TAG = "SplashActivity.TAG";
 
     // 成员变量命名推荐添加m，向系统命名靠拢
     private Handler mHandler = new Handler(){
@@ -55,19 +63,124 @@ public class SplashActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case UPDATE_VERSION:
+                    showUpdateDialog();
                     break;
                 case ENTER_HOME: // 跳转主界面
+                    enterHome();
                     break;
                 case URL_ERROR:
+
+                    ToastUtils.show(getApplicationContext(), "url 异常");
+                    enterHome();
                     break;
                 case IO_ERROR:
+
+                    ToastUtils.show(getApplicationContext(), "IO 异常");
+                    enterHome();
                     break;
                 case JSON_ERROR:
+
+                    ToastUtils.show(getApplicationContext(), "JSON解析异常");
+                    enterHome();
                     break;
             }
         }
     };
+    private String mVersionDes;
+    private String mDownloadUrl;
 
+    private void showUpdateDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("是否更新");
+        builder.setIcon(R.drawable.ic_launcher_background);
+        builder.setMessage(mVersionDes);
+
+        builder.setPositiveButton("立即更新", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // 下载更新
+                downloadApk();
+            }
+        });
+        builder.setNegativeButton("稍后更新", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                enterHome();
+            }
+        });
+
+//        builder.setCancelable(true); // 加了这一句就IO异常了
+        builder.setCancelable(false);
+
+        builder.show();
+
+    }
+
+    protected void downloadApk() {
+
+        // 参考链接：https://blog.csdn.net/tyk9999tyk/article/details/53306035
+
+        // apk 下载地址，放置apk的所在路径
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            // 获取sd路径
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mobilesafe.apk";
+
+            // 发送请求 获取apk 并放到指定路径
+
+            RequestParams params = new RequestParams(mDownloadUrl);
+            x.http().post(params, new Callback.ProgressCallback<File>() {
+
+                @Override
+                public void onSuccess(File result) {
+                    Log.i(TAG, "onSuccess: ");
+                }
+
+                @Override
+                public void onError(Throwable ex, boolean isOnCallback) {
+                    Log.i(TAG, "onError: ");
+                }
+
+                @Override
+                public void onCancelled(CancelledException cex) {
+                    Log.i(TAG, "onCancelled: ");
+                }
+
+                @Override
+                public void onFinished() {
+                    Log.i(TAG, "onFinished: ");
+                }
+
+                @Override
+                public void onWaiting() {
+                    Log.i(TAG, "onWaiting: ");
+                }
+
+                @Override
+                public void onStarted() {
+                    Log.i(TAG, "onStarted: ");
+                }
+
+                @Override
+                public void onLoading(long total, long current, boolean isDownloading) {
+                    Log.i(TAG, "onLoading: ");
+                }
+            });
+        }
+
+
+    }
+
+    /**
+     * 进入主页
+     */
+    private void enterHome() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+        finish(); // 关闭主界面
+    }
 
 
     @Override
@@ -105,10 +218,13 @@ public class SplashActivity extends AppCompatActivity {
     private void checkVersion() {
 
         final Message msg = Message.obtain();
+        final long startTime = System.currentTimeMillis();
+
 
         new Thread(){
             @Override
             public void run() {
+
                 try {
 
                     // 封装url
@@ -137,22 +253,21 @@ public class SplashActivity extends AppCompatActivity {
                         // 将流转换成字符串
                         String jsonString = StreamUtil.stream2String(is);
 
-                        Log.i(tag, jsonString);
+                        Log.i(TAG, jsonString);
 
                         // json 解析
                         JSONObject jsonObject = new JSONObject(jsonString);
                         JSONObject dictionary = jsonObject.getJSONObject("data");
 
                         String versionName = dictionary.getString("versionName");
-                        String versionDes = dictionary.getString("versionDes");
+                        mVersionDes = dictionary.getString("versionDes");
                         String versionCode = dictionary.getString("versionCode");
-                        String downloadUrl = dictionary.getString("downloadUrl");
+                        mDownloadUrl = dictionary.getString("mDownloadUrl");
 
-                        Log.i(tag, "versionName : "+versionName);
-                        Log.i(tag, "versionDes : "+versionDes);
-                        Log.i(tag, "versionCode : "+versionCode);
-                        Log.i(tag, "downloadUrl : "+downloadUrl);
-
+                        Log.i(TAG, "versionName : "+versionName);
+                        Log.i(TAG, "versionDes : "+ mVersionDes);
+                        Log.i(TAG, "versionCode : "+versionCode);
+                        Log.i(TAG, "mDownloadUrl : "+ mDownloadUrl);
 
 
                         // 比对版本号 (服务器版本号>本地版本号，提示用户更新)
@@ -169,12 +284,13 @@ public class SplashActivity extends AppCompatActivity {
                         }
 
                     } else {
-                        Log.i(tag, "请求失败。。。。");
+                        Log.i(TAG, "请求失败。。。。");
 
 
                     }
 
                 } catch (MalformedURLException e) {
+                    System.out.println("url异常==============");
                     // url 异常
                     e.printStackTrace();
 
@@ -189,6 +305,18 @@ public class SplashActivity extends AppCompatActivity {
                     // json 接卸异常
                     e.printStackTrace();
                     msg.what = JSON_ERROR;
+                } finally {
+
+                    long endTime = System.currentTimeMillis();
+                    /// 强制执行4秒后发送消息
+                    if (endTime - startTime < 4000) {
+                        try {
+                            Thread.sleep(4000-(endTime - startTime));
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    mHandler.sendMessage(msg);
                 }
             }
         }.start();

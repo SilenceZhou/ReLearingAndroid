@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
+    buildToolsVersion "29.0.0"
     defaultConfig {
-        applicationId "com.silencezhou.mobilesafe"
+        applicationId "com.example.testasyn"
         minSdkVersion 15
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -25,5 +26,4 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'org.xutils:xutils:3.5.1'
 }

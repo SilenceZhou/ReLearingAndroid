@@ -119,7 +119,7 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    protected void downloadApk() {
+    public void downloadApk() {
 
         // 参考链接：https://blog.csdn.net/tyk9999tyk/article/details/53306035
 
@@ -129,9 +129,17 @@ public class SplashActivity extends AppCompatActivity {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "mobilesafe.apk";
 
             // 发送请求 获取apk 并放到指定路径
+            System.out.println("=======" + mDownloadUrl);
 
             RequestParams params = new RequestParams(mDownloadUrl);
-            x.http().post(params, new Callback.ProgressCallback<File>() {
+
+
+            // 为RequestParams设置文件下载后的保存路径
+            params.setSaveFilePath(path);
+            // 下载完成后自动为文件命名
+            params.setAutoRename(true);
+
+            x.http().get(params, new Callback.ProgressCallback<File>() {
 
                 @Override
                 public void onSuccess(File result) {
@@ -165,7 +173,8 @@ public class SplashActivity extends AppCompatActivity {
 
                 @Override
                 public void onLoading(long total, long current, boolean isDownloading) {
-                    Log.i(TAG, "onLoading: ");
+                    double progress = current / (double)total;
+                    Log.i(TAG, "onLoading: 下载百分比" + progress * 100 + "%%");
                 }
             });
         }
@@ -187,7 +196,17 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // 如果不初始化会报错
+        // java.lang.NullPointerException: Attempt to invoke interface method
+        // 'org.xutils.common.task.AbsTask org.xutils.common.TaskController.start(org.xutils.common.task.AbsTask)'
+        // on a null object reference
+
+        x.Ext.init(getApplication());
+        x.Ext.setDebug(BuildConfig.DEBUG); // 是否输出debug日志, 开启debug会影响性能.
+
         setContentView(R.layout.activity_splash);
+
+
 
         // 初始化UI
         initUI();
@@ -262,7 +281,7 @@ public class SplashActivity extends AppCompatActivity {
                         String versionName = dictionary.getString("versionName");
                         mVersionDes = dictionary.getString("versionDes");
                         String versionCode = dictionary.getString("versionCode");
-                        mDownloadUrl = dictionary.getString("mDownloadUrl");
+                        mDownloadUrl = dictionary.getString("downloadUrl");
 
                         Log.i(TAG, "versionName : "+versionName);
                         Log.i(TAG, "versionDes : "+ mVersionDes);

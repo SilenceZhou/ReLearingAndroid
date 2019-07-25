@@ -61,6 +61,8 @@ public class SplashActivity extends AppCompatActivity {
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
+
+            enterHome();
             switch (msg.what) {
                 case UPDATE_VERSION:
                     showUpdateDialog();
@@ -222,14 +224,18 @@ public class SplashActivity extends AppCompatActivity {
      */
     private void initData() {
 
-        textView.setText("版本名称: " +  getVersionName());
+        // 暂时不请求升级接口
 
-        // 检测是否有新版本  成员变量 一般在前面添加m
-        // 获取本地版本号
-        mLocalVersionCode = getVersionCode();
-        // 获取服务器版本号
+        enterHome();
 
-        checkVersion();
+//        textView.setText("版本名称: " +  getVersionName());
+//
+//        // 检测是否有新版本  成员变量 一般在前面添加m
+//        // 获取本地版本号
+//        mLocalVersionCode = getVersionCode();
+//        // 获取服务器版本号
+//
+//        checkVersion();
 
 
     }

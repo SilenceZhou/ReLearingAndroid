@@ -1,16 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.silencezhou.activity.HomeActivity">
+    android:orientation="vertical">
+
+    <!--方法一：一个一个写-->
+    <!--<TextView-->
+    <!--android:text="功能列表"-->
+    <!--android:padding="20dp"-->
+    <!--android:textSize="20sp"-->
+    <!--android:gravity="center"-->
+    <!--android:background="#0f0"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content" />-->
+
+    <!--方法二：使用自定义样式-->
+    <TextView
+        style="@style/TitleStyle"
+        android:text="功能列表" />
+
+    <!--跑马灯-->
+    <!--android:focusableInTouchMode="true" : 可以获取焦点-->
+    <!--android:singleLine="true" : 只显示一行-->
+    <!--marquee_forever : 一直进行滚动-->
+    <!--自定义跑马灯控件-->
+    <!--为什么下面这种写法没法进行跑马灯效果-->
+    <!--
 
     <TextView
-        android:text="HomePage"
-        android:textSize="30sp"
+        android:id="@+id/tv_marquee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text="跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯"
         android:textColor="@color/colorPrimaryDark"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:textSize="20sp" />
+    -->
+    <com.silencezhou.activity.MarqueeTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:text="跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯跑马灯"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--饥饿宫格-->
+    <GridView
+        android:id="@+id/gv_home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="3"
+        android:verticalSpacing="10dp"></GridView>
+
+</LinearLayout>

@@ -2,9 +2,11 @@ package com.silencezhou.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -48,6 +50,19 @@ public class HomeActivity extends AppCompatActivity {
 
         // 九宫格设置数据适配器
         gv_home.setAdapter(new MyAdapter());
+
+        // grideView 跳转
+        gv_home.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 8:
+                        Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+            }
+        });
     }
 
     private void initUI() {

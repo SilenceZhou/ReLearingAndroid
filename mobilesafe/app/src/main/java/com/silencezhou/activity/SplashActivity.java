@@ -14,6 +14,9 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.silencezhou.mobilesafe.utils.ConstantValue;
+import com.silencezhou.mobilesafe.utils.SpUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,7 +65,6 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
 
-            enterHome();
             switch (msg.what) {
                 case UPDATE_VERSION:
                     showUpdateDialog();
@@ -95,6 +97,9 @@ public class SplashActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+
+//        builder.setCancelable(true); // 加了这一句就IO异常了
+        builder.setCancelable(false); // 点击dialog不让消失
         builder.setTitle("是否更新");
         builder.setIcon(R.drawable.ic_launcher_background);
         builder.setMessage(mVersionDes);
@@ -113,9 +118,6 @@ public class SplashActivity extends AppCompatActivity {
                 enterHome();
             }
         });
-
-//        builder.setCancelable(true); // 加了这一句就IO异常了
-        builder.setCancelable(false);
 
         builder.show();
 
@@ -224,20 +226,19 @@ public class SplashActivity extends AppCompatActivity {
      */
     private void initData() {
 
-        // 暂时不请求升级接口
+        textView.setText("版本名称: " +  getVersionName());
 
-        enterHome();
-
-//        textView.setText("版本名称: " +  getVersionName());
-//
-//        // 检测是否有新版本  成员变量 一般在前面添加m
-//        // 获取本地版本号
-//        mLocalVersionCode = getVersionCode();
-//        // 获取服务器版本号
-//
-//        checkVersion();
-
-
+        // 检测是否有新版本  成员变量 一般在前面添加m
+        // 获取本地版本号
+        mLocalVersionCode = getVersionCode();
+        // 获取服务器版本号
+        boolean open_update = SpUtils.getBoolean(this, ConstantValue.OPEN_UPDATE, false);
+        if (open_update) {
+            checkVersion();
+        } else {
+            // 需要延时好让用户看到splash界面 : 利用消息机制
+            mHandler.sendEmptyMessageDelayed(ENTER_HOME, 4000);
+        }
     }
 
     private void checkVersion() {

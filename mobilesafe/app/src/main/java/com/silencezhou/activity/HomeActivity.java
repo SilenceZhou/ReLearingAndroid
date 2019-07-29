@@ -10,12 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.silencezhou.mobilesafe.utils.ConstantValue;
 import com.silencezhou.mobilesafe.utils.SpUtils;
+
+import org.w3c.dom.Text;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -85,13 +89,68 @@ public class HomeActivity extends AppCompatActivity {
         }
 
 
-
     }
 
     /**
      * 确认密码对话框
      */
     private void showConfigPsdDialog() {
+// 需自定展示样式，所以需要调用alertDialog.setView();
+        // view有自己编写的xml转换成view
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog alertDialog = builder.create();
+
+        final View view = View.inflate(this, R.layout.dialog_config_psd, null);
+        alertDialog.setView(view);
+        alertDialog.show();
+
+        /// 这个地方注意要用View的findViewById, 不然会报错
+        Button btn_submit = (Button) view.findViewById(R.id.btn_submit);
+        Button btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
+
+        btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                EditText ed_config_psd = (EditText) view.findViewById(R.id.ed_config_psd);
+
+                String config_psd = ed_config_psd.getText().toString();
+
+
+                if (!TextUtils.isEmpty(config_psd)) {
+
+                    String psd = SpUtils.getString(getApplicationContext(), ConstantValue.MOBILE_SAFE_PSD, "");
+
+                    // 存储密码 和 确认密码一样 则进入别的页面
+                    if (psd.equals(config_psd)) {
+                        /// 跳转到设置页面 ： 这个页面必须在AndroidManifest.xml里面声明
+                        Intent intent = new Intent(getApplicationContext(), TestActivety.class);
+                        startActivity(intent);
+                        /// 跳转到新的页面 把对话框进行隐藏
+                        alertDialog.dismiss();
+                        SpUtils.putString(getApplicationContext(), ConstantValue.MOBILE_SAFE_PSD, psd);
+
+                    } else {
+                        ToastUtils.show(getApplicationContext(), "确认密码错误");
+                    }
+                } else {
+                    ToastUtils.show(getApplicationContext(), "请输入密码");
+                }
+
+            }
+        });
+
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 内部类使用外部变量，需要把外部变量改成final
+                alertDialog.dismiss();
+
+
+            }
+        });
+
     }
 
     /**
@@ -101,11 +160,60 @@ public class HomeActivity extends AppCompatActivity {
         // 需自定展示样式，所以需要调用alertDialog.setView();
         // view有自己编写的xml转换成view
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        AlertDialog alertDialog = builder.create();
+        final AlertDialog alertDialog = builder.create();
 
-        View view = View.inflate(this,R.layout.dialog_set_psd, null);
+        final View view = View.inflate(this, R.layout.dialog_set_psd, null);
         alertDialog.setView(view);
         alertDialog.show();
+
+        /// 这个地方注意要用View的findViewById, 不然会报错
+        Button btn_submit = (Button) view.findViewById(R.id.btn_submit);
+        Button btn_cancel = (Button) view.findViewById(R.id.btn_cancel);
+
+        btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                EditText ed_set_psd = (EditText) view.findViewById(R.id.ed_set_psd);
+                EditText ed_config_psd = (EditText) view.findViewById(R.id.ed_config_psd);
+
+                String psd = ed_set_psd.getText().toString();
+                String config_psd = ed_config_psd.getText().toString();
+
+                if (!TextUtils.isEmpty(psd) && !TextUtils.isEmpty(config_psd)) {
+
+                    if (psd.equals(config_psd)) {
+                        /// 跳转到设置页面 ： 这个页面必须在AndroidManifest.xml里面声明
+                        Intent intent = new Intent(getApplicationContext(), TestActivety.class);
+                        startActivity(intent);
+                        /// 跳转到新的页面 把对话框进行隐藏
+                        alertDialog.dismiss();
+
+                        SpUtils.putString(getApplicationContext(), ConstantValue.MOBILE_SAFE_PSD, psd);
+
+                    } else {
+                        ToastUtils.show(getApplicationContext(), "确认密码错误");
+                    }
+
+                } else {
+                    ToastUtils.show(getApplicationContext(), "请输入密码");
+
+                }
+
+            }
+        });
+
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 内部类使用外部变量，需要把外部变量改成final
+                alertDialog.dismiss();
+
+
+            }
+        });
+
     }
 
     private void initUI() {

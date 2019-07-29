@@ -13,6 +13,10 @@ public class SettingItemView extends RelativeLayout {
     private CheckBox cb_box;
     private TextView tv_desc;
     private static final String TAG = "SettingItemView";
+    private static final String NAMESPACE = "http://schemas.android.com/apk/res/com.silencezhou.mobilesafe";
+    private String mDesctitle;
+    private String mDescoff;
+    private String mDescon;
 
     public SettingItemView(Context context) {
         this(context, null);
@@ -40,6 +44,8 @@ public class SettingItemView extends RelativeLayout {
 
         // 获取自定义已经原生属性的操作 attrs
         initAttrs(attrs);
+
+        tv_title.setText(mDescon);
     }
 
     /**
@@ -50,11 +56,18 @@ public class SettingItemView extends RelativeLayout {
 
         Log.i(TAG, "initAttrs count: " + attrs.getAttributeCount());
 
-        for (int i = 0; i < attrs.getAttributeCount(); i++) {
-            Log.i(TAG, "name: " + attrs.getAttributeName(i));
-            Log.i(TAG, "value: " + attrs.getAttributeValue(i));
-            Log.i(TAG, "===========================");
-        }
+        // 遍历属性
+//        for (int i = 0; i < attrs.getAttributeCount(); i++) {
+//            Log.i(TAG, "name: " + attrs.getAttributeName(i));
+//            Log.i(TAG, "value: " + attrs.getAttributeValue(i));
+//            Log.i(TAG, "===========================");
+//        }
+
+        mDesctitle = attrs.getAttributeValue(NAMESPACE, "desctitle");
+        mDescoff = attrs.getAttributeValue(NAMESPACE, "descoff");
+        mDescon = attrs.getAttributeValue(NAMESPACE, "descon");
+
+
 
 
     }
@@ -72,9 +85,9 @@ public class SettingItemView extends RelativeLayout {
     public void setCheck(boolean isCheck) {
         cb_box.setChecked(isCheck);
         if (isCheck) {
-            tv_desc.setText("自动更新已开启");
+            tv_desc.setText(mDescon);
         } else {
-            tv_desc.setText("自动更新已关闭");
+            tv_desc.setText(mDescoff);
         }
     }
 

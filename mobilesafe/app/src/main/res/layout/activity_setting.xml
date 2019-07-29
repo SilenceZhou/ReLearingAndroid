@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -58,5 +56,18 @@
         mobilesafe:descon="自动更新开启"
         >
     </com.silencezhou.activity.SettingItemView>
+
+    <com.silencezhou.activity.SettingItemView
+        xmlns:mobilesafe="http://schemas.android.com/apk/res/com.silencezhou.mobilesafe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        mobilesafe:desctitle="电话归属地的显示设置"
+        mobilesafe:descoff="电话归属地的显示已关闭"
+        mobilesafe:descon="电话归属地的显示已开启"
+        >
+    </com.silencezhou.activity.SettingItemView>
+
+
+
 
 </LinearLayout>

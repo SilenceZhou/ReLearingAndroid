@@ -26,4 +26,31 @@ public class SpUtils {
         }
         return sp.getBoolean(key, defValue);
     }
+
+
+    /**
+     * 写入字符串到 偏好设置文件了里面
+     * @param ctx
+     * @param key
+     * @param value
+     */
+    static public void putString(Context ctx, String key, String value) {
+        if (sp == null) {
+            sp = ctx.getSharedPreferences("config", Context.MODE_PRIVATE);
+        }
+        sp.edit().putString(key, value).commit();
+    }
+
+    /**
+     * @param ctx 上下文环境
+     * @param key  存储key值
+     * @param defValue 默认值
+     * @return
+     */
+    static public String getString(Context ctx, String key, String defValue) {
+        if (sp == null) {
+            sp = ctx.getSharedPreferences("config", Context.MODE_PRIVATE);
+        }
+        return sp.getString(key, defValue);
+    }
 }

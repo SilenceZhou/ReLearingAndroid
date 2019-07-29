@@ -1,9 +1,11 @@
 package com.silencezhou.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -11,6 +13,9 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.silencezhou.mobilesafe.utils.ConstantValue;
+import com.silencezhou.mobilesafe.utils.SpUtils;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -56,6 +61,9 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
+                    case 0:
+                        showDialog();
+                        break;
                     case 8:
                         Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
                         startActivity(intent);
@@ -63,6 +71,41 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showDialog() {
+        // 判断本地是否存储密码
+        String psd = SpUtils.getString(this, ConstantValue.MOBILE_SAFE_PSD, "");
+        if (TextUtils.isEmpty(psd)) {
+            // 1、设置初始化密码
+            showSetpsdDialog();
+        } else {
+            // 2、读取 初始密码
+            showConfigPsdDialog();
+        }
+
+
+
+    }
+
+    /**
+     * 确认密码对话框
+     */
+    private void showConfigPsdDialog() {
+    }
+
+    /**
+     * 设置密码对话框
+     */
+    private void showSetpsdDialog() {
+        // 需自定展示样式，所以需要调用alertDialog.setView();
+        // view有自己编写的xml转换成view
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog alertDialog = builder.create();
+
+        View view = View.inflate(this,R.layout.dialog_set_psd, null);
+        alertDialog.setView(view);
+        alertDialog.show();
     }
 
     private void initUI() {

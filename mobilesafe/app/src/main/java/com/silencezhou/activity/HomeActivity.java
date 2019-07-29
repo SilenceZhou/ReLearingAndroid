@@ -146,8 +146,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // 内部类使用外部变量，需要把外部变量改成final
                 alertDialog.dismiss();
-
-
             }
         });
 

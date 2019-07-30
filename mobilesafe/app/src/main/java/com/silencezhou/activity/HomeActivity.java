@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.silencezhou.mobilesafe.utils.ConstantValue;
+import com.silencezhou.mobilesafe.utils.Md5Utils;
 import com.silencezhou.mobilesafe.utils.SpUtils;
 
 import org.w3c.dom.Text;
@@ -122,13 +123,12 @@ public class HomeActivity extends AppCompatActivity {
                     String psd = SpUtils.getString(getApplicationContext(), ConstantValue.MOBILE_SAFE_PSD, "");
 
                     // 存储密码 和 确认密码一样 则进入别的页面
-                    if (psd.equals(config_psd)) {
+                    if (psd.equals(Md5Utils.encoder(config_psd))) {
                         /// 跳转到设置页面 ： 这个页面必须在AndroidManifest.xml里面声明
                         Intent intent = new Intent(getApplicationContext(), TestActivety.class);
                         startActivity(intent);
                         /// 跳转到新的页面 把对话框进行隐藏
                         alertDialog.dismiss();
-                        SpUtils.putString(getApplicationContext(), ConstantValue.MOBILE_SAFE_PSD, psd);
 
                     } else {
                         ToastUtils.show(getApplicationContext(), "确认密码错误");
@@ -187,7 +187,7 @@ public class HomeActivity extends AppCompatActivity {
                         /// 跳转到新的页面 把对话框进行隐藏
                         alertDialog.dismiss();
 
-                        SpUtils.putString(getApplicationContext(), ConstantValue.MOBILE_SAFE_PSD, psd);
+                        SpUtils.putString(getApplicationContext(), ConstantValue.MOBILE_SAFE_PSD, Md5Utils.encoder(psd));
 
                     } else {
                         ToastUtils.show(getApplicationContext(), "确认密码错误");

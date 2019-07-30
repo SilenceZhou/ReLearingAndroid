@@ -5,23 +5,18 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLOutput;
 
 public class Md5Utils {
-    public static void main(String[] args) {
-
-        // "abc" 则是'盐'
-//        String psd = "1,.Aa1" + "abc";
-        String psd = "123" + "abc"; // 轻松解密出来
-
-        encoder(psd);
-    }
 
     /** 给指定字符串按照MD5算法进行加密 (将字符串转换成 32位的字符串 => 不可逆)
-     * @param psd 需要加密的密码
+     * @param psd 需要加密的密码 加盐处理
      * @return
      */
-    private static void encoder(String psd) {
+    public static String encoder(String psd) {
 
         // 单例模式
         try {
+
+            // 加盐处理
+            psd = psd + "mobilesafe";
 
             // 指定加密算法类型 =>单例模式 参数为算法
             MessageDigest digest = MessageDigest.getInstance("MD5");
@@ -51,6 +46,8 @@ public class Md5Utils {
             // 打印最终的md5字符串
             System.out.println(stringBuffer.toString());
 
+            return stringBuffer.toString();
+
 
             /// 网上能够界面： 因为不可逆，会有一个数据库 然后进行保存，提供进行查询
             //、
@@ -60,6 +57,7 @@ public class Md5Utils {
             e.printStackTrace();
         }
 
+        return  "";
     }
 
 

@@ -103,6 +103,9 @@ public class HomeActivity extends AppCompatActivity {
 
         final View view = View.inflate(this, R.layout.dialog_config_psd, null);
         alertDialog.setView(view);
+
+        // 为了兼容低版本，给对话框布局的时候 去掉内边距（系统默认上下为2，在低版本系统里面）
+//        alertDialog.setView(view,0,0,0,0);
         alertDialog.show();
 
         /// 这个地方注意要用View的findViewById, 不然会报错
@@ -125,8 +128,10 @@ public class HomeActivity extends AppCompatActivity {
                     // 存储密码 和 确认密码一样 则进入别的页面
                     if (psd.equals(Md5Utils.encoder(config_psd))) {
                         /// 跳转到设置页面 ： 这个页面必须在AndroidManifest.xml里面声明
-                        Intent intent = new Intent(getApplicationContext(), TestActivety.class);
+//                        Intent intent = new Intent(getApplicationContext(), TestActivety.class);
+                        Intent intent = new Intent(getApplicationContext(), SetupOverActivity.class);
                         startActivity(intent);
+
                         /// 跳转到新的页面 把对话框进行隐藏
                         alertDialog.dismiss();
 
@@ -161,7 +166,9 @@ public class HomeActivity extends AppCompatActivity {
         final AlertDialog alertDialog = builder.create();
 
         final View view = View.inflate(this, R.layout.dialog_set_psd, null);
-        alertDialog.setView(view);
+        //alertDialog.setView(view);
+        // 为了兼容低版本，给对话框布局的时候 去掉内边距（系统默认上下为2，在低版本系统里面）
+        alertDialog.setView(view,0,0,0,0);
         alertDialog.show();
 
         /// 这个地方注意要用View的findViewById, 不然会报错
@@ -182,7 +189,8 @@ public class HomeActivity extends AppCompatActivity {
 
                     if (psd.equals(config_psd)) {
                         /// 跳转到设置页面 ： 这个页面必须在AndroidManifest.xml里面声明
-                        Intent intent = new Intent(getApplicationContext(), TestActivety.class);
+//                        Intent intent = new Intent(getApplicationContext(), TestActivety.class);
+                        Intent intent = new Intent(getApplicationContext(), SetupOverActivity.class);
                         startActivity(intent);
                         /// 跳转到新的页面 把对话框进行隐藏
                         alertDialog.dismiss();

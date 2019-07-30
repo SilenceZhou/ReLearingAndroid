@@ -24,6 +24,9 @@ versionName ： 版本名称
         android:theme="@style/AppTheme">
         <activity android:name=".SettingActivity"></activity>
         <activity android:name=".TestActivety"></activity>
+        <activity android:name=".SetupOverActivity"></activity>
+        <activity android:name=".Setup1Activity"></activity>
+
         <activity android:name=".HomeActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>

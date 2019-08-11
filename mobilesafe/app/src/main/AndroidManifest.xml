@@ -7,6 +7,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- versionCode ： 版本号 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /><!--获取SIM卡序列号-->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
     <!--
 versionName ： 版本名称
      最后一位： 修复bug版本，
@@ -26,6 +29,10 @@ versionName ： 版本名称
         <activity android:name=".TestActivety"></activity>
         <activity android:name=".SetupOverActivity"></activity>
         <activity android:name=".Setup1Activity"></activity>
+        <activity android:name=".Setup2Activity"></activity>
+        <activity android:name=".Setup3Activity"></activity>
+        <activity android:name=".Setup4Activity"></activity>
+        <activity android:name=".ContactListActivity"></activity>
 
         <activity android:name=".HomeActivity" />
         <activity android:name=".SplashActivity">

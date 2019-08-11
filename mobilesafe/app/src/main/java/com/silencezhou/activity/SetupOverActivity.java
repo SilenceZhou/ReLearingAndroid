@@ -31,6 +31,11 @@ class SetupOverActivity extends Activity {
             finish();
         }
 
+        initUI();
 
+    }
+
+    private void initUI() {
+        
     }
 }

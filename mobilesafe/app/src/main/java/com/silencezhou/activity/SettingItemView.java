@@ -45,7 +45,7 @@ public class SettingItemView extends RelativeLayout {
         // 获取自定义已经原生属性的操作 attrs
         initAttrs(attrs);
 
-        tv_title.setText(mDescon);
+        tv_title.setText(mDesctitle);
     }
 
     /**

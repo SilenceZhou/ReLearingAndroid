@@ -9,6 +9,9 @@ import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 
+import com.silencezhou.mobilesafe.utils.ConstantValue;
+import com.silencezhou.mobilesafe.utils.SpUtils;
+
 class Setup3Activity extends Activity {
 
     private EditText et_phone_number;
@@ -38,6 +41,15 @@ class Setup3Activity extends Activity {
     /// 返回到当前界面接受结果
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (data != null) {
+            String phone = data.getStringExtra("phone");
+            System.out.println("设置三界面获取的值" + phone);
+            et_phone_number.setText(phone);
+
+            // 存储联系人值plist中
+            SpUtils.putString(getApplicationContext(), ConstantValue.CONTANT_PHONE, phone);
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 

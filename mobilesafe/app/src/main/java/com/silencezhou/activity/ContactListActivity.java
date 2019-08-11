@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,10 +140,11 @@ class ContactListActivity extends Activity {
                     HashMap<String, String> item = myAdapter.getItem(position);
                     // 获取当前条目指向集合的电话号码
                     String phone = item.get("phone");
+                    System.out.println("contact界面回传给setup3界面的数据" + phone);
                     // 此电话号码给第三个导航界面
                     Intent intent = new Intent();
                     intent.putExtra("phone", phone);
-                    setResult(0, intent);
+                    setResult(RESULT_OK, intent);
                     finish();
                 }
             }

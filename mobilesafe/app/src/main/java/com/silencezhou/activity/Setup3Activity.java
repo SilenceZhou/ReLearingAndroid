@@ -42,7 +42,9 @@ class Setup3Activity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        System.out.println("==========11111");
         if (data != null) {
+            System.out.println("==========2222222");
             String phone = data.getStringExtra("phone");
             System.out.println("设置三界面获取的值" + phone);
             et_phone_number.setText(phone);

@@ -15,9 +15,15 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.silencezhou.mobilesafe.utils.ConstantValue;
 import com.silencezhou.mobilesafe.utils.SpUtils;
+
+import org.w3c.dom.Text;
+
+import java.util.UUID;
 
 class Setup2Activity extends Activity {
 
@@ -29,6 +35,31 @@ class Setup2Activity extends Activity {
         setContentView(R.layout.activity_setup2);
 
         initUI();
+    }
+
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    /// checkSelfPermission 该方法只能在API23上用
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private String getMyUUID() {
+        final TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        final String tmDevice, tmSerial, tmPhone, androidId;
+        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+            return "";
+        }
+        tmDevice = "" + manager.getDeviceId();
+        tmSerial = "" + manager.getSimSerialNumber();
+        androidId = "" + android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice.hashCode() << 32) | tmSerial.hashCode());
+        String uniqueId = deviceUuid.toString();
+        return uniqueId;
     }
 
     private void initUI() {
@@ -56,35 +87,27 @@ class Setup2Activity extends Activity {
 
                 // 存储
                 if (!isCheck) {
+                    // 1.获取sim卡序列号的TelephoneManager
+                    TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                    if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(Setup2Activity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+                        return;
+                    }
+                    String simSerialNumber = manager.getSimSerialNumber();
+                    System.out.println("11111simSerialNumber = " + simSerialNumber);
 
-                    // 模拟器获取序列号不行, 这个地方进行模拟
-                    SpUtils.putString(getApplication(), ConstantValue.SIM_NUMER, "123");
-//                    // 存储 序列卡号
-//                    // 1.获取sim卡序列号的TelephoneManager
-//                    TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-//                    if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-//                        // TODO: Consider calling
-//                        //    Activity#requestPermissions
-//                        // here to request the missing permissions, and then overriding
-//                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                        //                                          int[] grantResults)
-//                        // to handle the case where the user grants the permission. See the documentation
-//                        // for Activity#requestPermissions for more details.
-//
-//
-//                        return;
-//                    }
-//
-//                    /// 真机OK
-//                    @SuppressLint("MissingPermission") String simSerialNumber = manager.getSimSerialNumber();
-//
-//                    System.out.println("simSerialNumber = " + simSerialNumber);
-//
-//                    // 存储
-//                    SpUtils.putString(getApplication(), ConstantValue.SIM_NUMER, simSerialNumber);
+                    // 安卓后续都没法获取 sim 序列号了
+                    if (TextUtils.isEmpty(simSerialNumber)) {
+
+                        simSerialNumber = getMyUUID();
+                    }
+                    System.out.println("22222simSerialNumber = " + simSerialNumber);
+
+                    // 存储
+                    SpUtils.putString(getApplication(), ConstantValue.SIM_NUMER, simSerialNumber);
 
                 } else {
-                    System.out.println("22222");
+
                     // 将存储序列卡号的节点，从sp中删除
                     SpUtils.remove(getApplicationContext(), ConstantValue.SIM_NUMER);
                 }

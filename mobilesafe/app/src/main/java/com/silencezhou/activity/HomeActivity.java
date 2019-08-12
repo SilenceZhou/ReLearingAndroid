@@ -1,9 +1,16 @@
 package com.silencezhou.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,16 +29,55 @@ import com.silencezhou.mobilesafe.utils.SpUtils;
 
 import org.w3c.dom.Text;
 
+import java.util.List;
+
 public class HomeActivity extends AppCompatActivity {
 
     private GridView gv_home;
     private String[] mTitleArr;
     private int[] mPictureArr;
 
+    /**
+     * 检查是否已被授权危险权限
+     *
+     * @param permissions
+     * @return
+     */
+    public boolean checkDangerousPermissions(Activity ac, String[] permissions) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(ac, permission)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        System.out.println("requestCode =" + requestCode);
+
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+
+        String[] permissions = {Manifest.permission.READ_CONTACTS,
+                Manifest.permission.READ_PHONE_STATE};
+
+        if (!checkDangerousPermissions(this, permissions)) {
+            ActivityCompat.requestPermissions(this,permissions, 1);
+        }
+
 
         initUI();
         initData();
@@ -168,7 +214,7 @@ public class HomeActivity extends AppCompatActivity {
         final View view = View.inflate(this, R.layout.dialog_set_psd, null);
         //alertDialog.setView(view);
         // 为了兼容低版本，给对话框布局的时候 去掉内边距（系统默认上下为2，在低版本系统里面）
-        alertDialog.setView(view,0,0,0,0);
+        alertDialog.setView(view, 0, 0, 0, 0);
         alertDialog.show();
 
         /// 这个地方注意要用View的findViewById, 不然会报错

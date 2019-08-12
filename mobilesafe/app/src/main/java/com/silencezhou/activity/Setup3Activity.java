@@ -33,7 +33,7 @@ class Setup3Activity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ContactListActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 200);
             }
         });
     }

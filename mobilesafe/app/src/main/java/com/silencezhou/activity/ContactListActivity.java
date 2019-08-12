@@ -70,17 +70,19 @@ class ContactListActivity extends Activity {
                 // content://com.android.contacts/data
                 // 1.获取内容解析器对象
                 ContentResolver contentResolver = getContentResolver();
+
                 // 2.做查询系统联系人数据库表过程（读取联系人权限）
                 Cursor cursor = contentResolver.query(Uri.parse("content://com.android.contacts/raw_contacts"),
                         new String[]{"contact_id"},
                         null,
                         null,
                         null);
+
                 // 3.循环游标，知道没有数据为止
                 contactList.clear();
+
                 while (cursor.moveToNext()) {
                     String id = cursor.getString(0);
-//                    System.out.println(string);
 
                     /// 4.根据用户唯一性id，查询data表和mimetype表生成视图，获取data以及mimetype字段
                     Cursor indexCursor = contentResolver.query(Uri.parse("content://com.android.contacts/data"),
@@ -90,27 +92,33 @@ class ContactListActivity extends Activity {
                             null);
 
                     /// 5.混选获取每一个联系人的电话号码以及姓名，数据类型
-                    System.out.println("=========================\n\n\n\n");
                     HashMap<String, String> hashMap = new HashMap<String, String>();
                     while (indexCursor.moveToNext()) {
                         String data = indexCursor.getString(0);
                         String mimetype = indexCursor.getString(1);
                         if (mimetype.equals("vnd.android.cursor.item/phone_v2")) {
                             if (!TextUtils.isEmpty(data) && data.length() > 0) {
-                                hashMap.put("phone", data.replace(" ", ""));
+                                // TODO:如何用正则表达式进行替换
+
+                                hashMap.put("phone", data.replace(" ", "")
+                                        .replace("-", "")
+                                        .replace(")", "")
+                                        .replace("(", ""));
                             }
 
                         } else if (mimetype.equals("vnd.android.cursor.item/name")) {
                             if (!TextUtils.isEmpty(data) && data.length() > 0) {
-                                hashMap.put("name", data.replace(" ", ""));
+//                                hashMap.put("name", data.replace(" ", "").replace("-", ""));
+
+                                data = data.replaceAll("\\- ", "");
+                                hashMap.put("name", data);
                             }
 
                         }
-
 //                        Log.i(TAG, "mimetype =" + indexCursor.getString(1));
 //                        Log.i(TAG, "data =" + indexCursor.getString(0));
                     }
-//                    Log.i(TAG, "hasMap" + hashMap);
+
                     if (!hashMap.isEmpty()) {
                         contactList.add(hashMap);
                     }
@@ -144,7 +152,11 @@ class ContactListActivity extends Activity {
                     // 此电话号码给第三个导航界面
                     Intent intent = new Intent();
                     intent.putExtra("phone", phone);
-                    setResult(RESULT_OK, intent);
+
+                    // 注意点：
+                    // 1. 打开的时候要用：startActivityForResult(intent, 200);
+                    // 2. RESULT_OK是不行，使用自定义
+                    setResult(200, intent);
                     finish();
                 }
             }
